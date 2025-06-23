@@ -25,7 +25,7 @@ jobs:
           git commit -m "chore: release v$ver [skip ci]"
           git push origin HEAD:main
       - name: Install dependencies
-        run: npm ci --ignore-scripts --no-optional
+        run: npm install --ignore-scripts
       - name: Publish package
         run: npm publish
         env:
