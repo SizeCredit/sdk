@@ -9,15 +9,19 @@ export enum Action {
   SELF_LIQUIDATE,
   COMPENSATE,
   SET_USER_CONFIGURATION,
-  COPY_LIMIT_ORDERS,
+  SET_COPY_LIMIT_ORDER_CONFIGS, // renamed in v1.8
+  SET_VAULT, // added in v1.8
+  MANAGE_COLLECTION_SUBSCRIPTIONS, // added in v1.8
   // add more actions here
   NUMBER_OF_ACTIONS,
 }
 
-export const ActionToFunctionName: Record<
-  Exclude<Action, Action.NUMBER_OF_ACTIONS>,
-  string
-> = {
+type AvailableActions = Exclude<
+  Action,
+  Action.NUMBER_OF_ACTIONS | Action.MANAGE_COLLECTION_SUBSCRIPTIONS
+>;
+
+export const ActionToFunctionName: Record<AvailableActions, string> = {
   [Action.DEPOSIT]: "deposit",
   [Action.WITHDRAW]: "withdraw",
   [Action.BUY_CREDIT_LIMIT]: "buyCreditLimit",
@@ -27,18 +31,17 @@ export const ActionToFunctionName: Record<
   [Action.SELF_LIQUIDATE]: "selfLiquidate",
   [Action.COMPENSATE]: "compensate",
   [Action.SET_USER_CONFIGURATION]: "setUserConfiguration",
-  [Action.COPY_LIMIT_ORDERS]: "copyLimitOrders",
+  [Action.SET_COPY_LIMIT_ORDER_CONFIGS]: "setCopyLimitOrderConfigs",
+  [Action.SET_VAULT]: "setVault",
 };
 
-export const FunctionNameToAction: Record<
-  string,
-  Exclude<Action, Action.NUMBER_OF_ACTIONS>
-> = Object.fromEntries(
-  Object.entries(ActionToFunctionName).map(([action, functionName]) => [
-    functionName,
-    Number(action),
-  ]),
-) as Record<string, Exclude<Action, Action.NUMBER_OF_ACTIONS>>;
+export const FunctionNameToAction: Record<string, AvailableActions> =
+  Object.fromEntries(
+    Object.entries(ActionToFunctionName).map(([action, functionName]) => [
+      functionName,
+      Number(action),
+    ]),
+  ) as Record<string, AvailableActions>;
 
 export type ActionsBitmap = bigint;
 

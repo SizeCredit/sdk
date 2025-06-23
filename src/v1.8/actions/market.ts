@@ -10,7 +10,8 @@ import {
   LiquidateWithReplacementParamsStruct,
   SelfLiquidateParamsStruct,
   SetUserConfigurationParamsStruct,
-  CopyLimitOrdersParamsStruct,
+  SetCopyLimitOrderConfigsParamsStruct,
+  SetVaultParamsStruct,
 } from "../types/ethers-contracts/Size";
 
 export type MarketFunctionName =
@@ -23,7 +24,8 @@ export type MarketFunctionName =
   | "liquidateWithReplacement"
   | "selfLiquidate"
   | "setUserConfiguration"
-  | "copyLimitOrders";
+  | "setCopyLimitOrderConfigs"
+  | "setVault";
 
 export type MarketOperationParams =
   | DepositParamsStruct
@@ -35,7 +37,8 @@ export type MarketOperationParams =
   | LiquidateWithReplacementParamsStruct
   | SelfLiquidateParamsStruct
   | SetUserConfigurationParamsStruct
-  | CopyLimitOrdersParamsStruct;
+  | SetCopyLimitOrderConfigsParamsStruct
+  | SetVaultParamsStruct;
 
 export type MarketOperation<
   T extends MarketOperationParams = MarketOperationParams,
@@ -150,13 +153,24 @@ export class MarketActions {
     };
   }
 
-  copyLimitOrders(
+  setCopyLimitOrderConfigs(
     market: Address,
-    params: CopyLimitOrdersParamsStruct,
-  ): MarketOperation<CopyLimitOrdersParamsStruct> {
+    params: SetCopyLimitOrderConfigsParamsStruct,
+  ): MarketOperation<SetCopyLimitOrderConfigsParamsStruct> {
     return {
       market,
-      functionName: "copyLimitOrders",
+      functionName: "setCopyLimitOrderConfigs",
+      params,
+    };
+  }
+
+  setVault(
+    market: Address,
+    params: SetVaultParamsStruct,
+  ): MarketOperation<SetVaultParamsStruct> {
+    return {
+      market,
+      functionName: "setVault",
       params,
     };
   }

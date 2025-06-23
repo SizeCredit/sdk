@@ -137,51 +137,6 @@ export type CompensateOnBehalfOfParamsStructOutput = [
   string,
 ] & { params: CompensateParamsStructOutput; onBehalfOf: string };
 
-export type CopyLimitOrderConfigStruct = {
-  minTenor: BigNumberish;
-  maxTenor: BigNumberish;
-  minAPR: BigNumberish;
-  maxAPR: BigNumberish;
-  offsetAPR: BigNumberish;
-};
-
-export type CopyLimitOrderConfigStructOutput = [
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-  BigNumber,
-] & {
-  minTenor: BigNumber;
-  maxTenor: BigNumber;
-  minAPR: BigNumber;
-  maxAPR: BigNumber;
-  offsetAPR: BigNumber;
-};
-
-export type CopyLimitOrdersParamsStruct = {
-  copyLoanOfferConfig: CopyLimitOrderConfigStruct;
-  copyBorrowOfferConfig: CopyLimitOrderConfigStruct;
-};
-
-export type CopyLimitOrdersParamsStructOutput = [
-  CopyLimitOrderConfigStructOutput,
-  CopyLimitOrderConfigStructOutput,
-] & {
-  copyLoanOfferConfig: CopyLimitOrderConfigStructOutput;
-  copyBorrowOfferConfig: CopyLimitOrderConfigStructOutput;
-};
-
-export type CopyLimitOrdersOnBehalfOfParamsStruct = {
-  params: CopyLimitOrdersParamsStruct;
-  onBehalfOf: string;
-};
-
-export type CopyLimitOrdersOnBehalfOfParamsStructOutput = [
-  CopyLimitOrdersParamsStructOutput,
-  string,
-] & { params: CopyLimitOrdersParamsStructOutput; onBehalfOf: string };
-
 export type DataViewStruct = {
   nextDebtPositionId: BigNumberish;
   nextCreditPositionId: BigNumberish;
@@ -330,6 +285,28 @@ export type SellCreditMarketParamsStructOutput = [
   exactAmountIn: boolean;
   collectionId: BigNumber;
   rateProvider: string;
+};
+
+export type CopyLimitOrderConfigStruct = {
+  minTenor: BigNumberish;
+  maxTenor: BigNumberish;
+  minAPR: BigNumberish;
+  maxAPR: BigNumberish;
+  offsetAPR: BigNumberish;
+};
+
+export type CopyLimitOrderConfigStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+] & {
+  minTenor: BigNumber;
+  maxTenor: BigNumber;
+  minAPR: BigNumber;
+  maxAPR: BigNumber;
+  offsetAPR: BigNumber;
 };
 
 export type LimitOrderStruct = {
@@ -560,8 +537,30 @@ export type SellCreditMarketOnBehalfOfParamsStructOutput = [
   recipient: string;
 };
 
+export type SetCopyLimitOrderConfigsParamsStruct = {
+  copyLoanOfferConfig: CopyLimitOrderConfigStruct;
+  copyBorrowOfferConfig: CopyLimitOrderConfigStruct;
+};
+
+export type SetCopyLimitOrderConfigsParamsStructOutput = [
+  CopyLimitOrderConfigStructOutput,
+  CopyLimitOrderConfigStructOutput,
+] & {
+  copyLoanOfferConfig: CopyLimitOrderConfigStructOutput;
+  copyBorrowOfferConfig: CopyLimitOrderConfigStructOutput;
+};
+
+export type SetCopyLimitOrderConfigsOnBehalfOfParamsStruct = {
+  params: SetCopyLimitOrderConfigsParamsStruct;
+  onBehalfOf: string;
+};
+
+export type SetCopyLimitOrderConfigsOnBehalfOfParamsStructOutput = [
+  SetCopyLimitOrderConfigsParamsStructOutput,
+  string,
+] & { params: SetCopyLimitOrderConfigsParamsStructOutput; onBehalfOf: string };
+
 export type SetUserConfigurationParamsStruct = {
-  vault: string;
   openingLimitBorrowCR: BigNumberish;
   allCreditPositionsForSaleDisabled: boolean;
   creditPositionIdsForSale: boolean;
@@ -569,13 +568,11 @@ export type SetUserConfigurationParamsStruct = {
 };
 
 export type SetUserConfigurationParamsStructOutput = [
-  string,
   BigNumber,
   boolean,
   boolean,
   BigNumber[],
 ] & {
-  vault: string;
   openingLimitBorrowCR: BigNumber;
   allCreditPositionsForSaleDisabled: boolean;
   creditPositionIdsForSale: boolean;
@@ -591,6 +588,23 @@ export type SetUserConfigurationOnBehalfOfParamsStructOutput = [
   SetUserConfigurationParamsStructOutput,
   string,
 ] & { params: SetUserConfigurationParamsStructOutput; onBehalfOf: string };
+
+export type SetVaultParamsStruct = { vault: string; forfeitOldShares: boolean };
+
+export type SetVaultParamsStructOutput = [string, boolean] & {
+  vault: string;
+  forfeitOldShares: boolean;
+};
+
+export type SetVaultOnBehalfOfParamsStruct = {
+  params: SetVaultParamsStruct;
+  onBehalfOf: string;
+};
+
+export type SetVaultOnBehalfOfParamsStructOutput = [
+  SetVaultParamsStructOutput,
+  string,
+] & { params: SetVaultParamsStructOutput; onBehalfOf: string };
 
 export type UpdateConfigParamsStruct = { key: string; value: BigNumberish };
 
@@ -690,8 +704,6 @@ export interface SizeInterface extends utils.Interface {
     "collateralRatio(address)": FunctionFragment;
     "compensate((uint256,uint256,uint256))": FunctionFragment;
     "compensateOnBehalfOf(((uint256,uint256,uint256),address))": FunctionFragment;
-    "copyLimitOrders(((uint256,uint256,uint256,uint256,int256),(uint256,uint256,uint256,uint256,int256)))": FunctionFragment;
-    "copyLimitOrdersOnBehalfOf((((uint256,uint256,uint256,uint256,int256),(uint256,uint256,uint256,uint256,int256)),address))": FunctionFragment;
     "data()": FunctionFragment;
     "debtTokenAmountToCollateralTokenAmount(uint256)": FunctionFragment;
     "deposit((address,uint256,address))": FunctionFragment;
@@ -702,7 +714,6 @@ export interface SizeInterface extends utils.Interface {
     "getCreditPosition(uint256)": FunctionFragment;
     "getDebtPosition(uint256)": FunctionFragment;
     "getLoanOfferAPR(address,uint256,address,uint256)": FunctionFragment;
-    "getLoanStatus(uint256)": FunctionFragment;
     "getPositionsCount()": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getSellCreditMarketSwapData((address,uint256,uint256,uint256,uint256,uint256,bool,uint256,address))": FunctionFragment;
@@ -714,8 +725,6 @@ export interface SizeInterface extends utils.Interface {
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "initialize(address,(uint256,uint256,uint256,uint256,uint256,address),(uint256,uint256,uint256,uint256,uint256),(address,uint64),(address,address,address,address,address,address))": FunctionFragment;
-    "isCreditPositionId(uint256)": FunctionFragment;
-    "isDebtPositionId(uint256)": FunctionFragment;
     "isDebtPositionLiquidatable(uint256)": FunctionFragment;
     "liquidate((uint256,uint256,uint256))": FunctionFragment;
     "liquidateWithReplacement((uint256,address,uint256,uint256,uint256,uint256,address))": FunctionFragment;
@@ -725,6 +734,7 @@ export interface SizeInterface extends utils.Interface {
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
     "proxiableUUID()": FunctionFragment;
+    "reinitialize()": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "repay((uint256,address))": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
@@ -735,15 +745,17 @@ export interface SizeInterface extends utils.Interface {
     "sellCreditLimitOnBehalfOf(((uint256,(uint256[],int256[],uint256[])),address))": FunctionFragment;
     "sellCreditMarket((address,uint256,uint256,uint256,uint256,uint256,bool,uint256,address))": FunctionFragment;
     "sellCreditMarketOnBehalfOf(((address,uint256,uint256,uint256,uint256,uint256,bool,uint256,address),address,address))": FunctionFragment;
-    "setUserConfiguration((address,uint256,bool,bool,uint256[]))": FunctionFragment;
-    "setUserConfigurationOnBehalfOf(((address,uint256,bool,bool,uint256[]),address))": FunctionFragment;
+    "setCopyLimitOrderConfigs(((uint256,uint256,uint256,uint256,int256),(uint256,uint256,uint256,uint256,int256)))": FunctionFragment;
+    "setCopyLimitOrderConfigsOnBehalfOf((((uint256,uint256,uint256,uint256,int256),(uint256,uint256,uint256,uint256,int256)),address))": FunctionFragment;
+    "setUserConfiguration((uint256,bool,bool,uint256[]))": FunctionFragment;
+    "setUserConfigurationOnBehalfOf(((uint256,bool,bool,uint256[]),address))": FunctionFragment;
     "setVariablePoolBorrowRate(uint128)": FunctionFragment;
-    "sizeFactory()": FunctionFragment;
+    "setVault((address,bool))": FunctionFragment;
+    "setVaultOnBehalfOf(((address,bool),address))": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "unpause()": FunctionFragment;
     "updateConfig((string,uint256))": FunctionFragment;
     "upgradeToAndCall(address,bytes)": FunctionFragment;
-    "vaultOf(address)": FunctionFragment;
     "version()": FunctionFragment;
     "withdraw((address,uint256,address))": FunctionFragment;
     "withdrawOnBehalfOf(((address,uint256,address),address))": FunctionFragment;
@@ -761,8 +773,6 @@ export interface SizeInterface extends utils.Interface {
       | "collateralRatio"
       | "compensate"
       | "compensateOnBehalfOf"
-      | "copyLimitOrders"
-      | "copyLimitOrdersOnBehalfOf"
       | "data"
       | "debtTokenAmountToCollateralTokenAmount"
       | "deposit"
@@ -773,7 +783,6 @@ export interface SizeInterface extends utils.Interface {
       | "getCreditPosition"
       | "getDebtPosition"
       | "getLoanOfferAPR"
-      | "getLoanStatus"
       | "getPositionsCount"
       | "getRoleAdmin"
       | "getSellCreditMarketSwapData"
@@ -785,8 +794,6 @@ export interface SizeInterface extends utils.Interface {
       | "grantRole"
       | "hasRole"
       | "initialize"
-      | "isCreditPositionId"
-      | "isDebtPositionId"
       | "isDebtPositionLiquidatable"
       | "liquidate"
       | "liquidateWithReplacement"
@@ -796,6 +803,7 @@ export interface SizeInterface extends utils.Interface {
       | "pause"
       | "paused"
       | "proxiableUUID"
+      | "reinitialize"
       | "renounceRole"
       | "repay"
       | "revokeRole"
@@ -806,15 +814,17 @@ export interface SizeInterface extends utils.Interface {
       | "sellCreditLimitOnBehalfOf"
       | "sellCreditMarket"
       | "sellCreditMarketOnBehalfOf"
+      | "setCopyLimitOrderConfigs"
+      | "setCopyLimitOrderConfigsOnBehalfOf"
       | "setUserConfiguration"
       | "setUserConfigurationOnBehalfOf"
       | "setVariablePoolBorrowRate"
-      | "sizeFactory"
+      | "setVault"
+      | "setVaultOnBehalfOf"
       | "supportsInterface"
       | "unpause"
       | "updateConfig"
       | "upgradeToAndCall"
-      | "vaultOf"
       | "version"
       | "withdraw"
       | "withdrawOnBehalfOf",
@@ -860,14 +870,6 @@ export interface SizeInterface extends utils.Interface {
     functionFragment: "compensateOnBehalfOf",
     values: [CompensateOnBehalfOfParamsStruct],
   ): string;
-  encodeFunctionData(
-    functionFragment: "copyLimitOrders",
-    values: [CopyLimitOrdersParamsStruct],
-  ): string;
-  encodeFunctionData(
-    functionFragment: "copyLimitOrdersOnBehalfOf",
-    values: [CopyLimitOrdersOnBehalfOfParamsStruct],
-  ): string;
   encodeFunctionData(functionFragment: "data", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "debtTokenAmountToCollateralTokenAmount",
@@ -901,10 +903,6 @@ export interface SizeInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getLoanOfferAPR",
     values: [string, BigNumberish, string, BigNumberish],
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getLoanStatus",
-    values: [BigNumberish],
   ): string;
   encodeFunctionData(
     functionFragment: "getPositionsCount",
@@ -954,14 +952,6 @@ export interface SizeInterface extends utils.Interface {
     ],
   ): string;
   encodeFunctionData(
-    functionFragment: "isCreditPositionId",
-    values: [BigNumberish],
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isDebtPositionId",
-    values: [BigNumberish],
-  ): string;
-  encodeFunctionData(
     functionFragment: "isDebtPositionLiquidatable",
     values: [BigNumberish],
   ): string;
@@ -986,6 +976,10 @@ export interface SizeInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "proxiableUUID",
+    values?: undefined,
+  ): string;
+  encodeFunctionData(
+    functionFragment: "reinitialize",
     values?: undefined,
   ): string;
   encodeFunctionData(
@@ -1029,6 +1023,14 @@ export interface SizeInterface extends utils.Interface {
     values: [SellCreditMarketOnBehalfOfParamsStruct],
   ): string;
   encodeFunctionData(
+    functionFragment: "setCopyLimitOrderConfigs",
+    values: [SetCopyLimitOrderConfigsParamsStruct],
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setCopyLimitOrderConfigsOnBehalfOf",
+    values: [SetCopyLimitOrderConfigsOnBehalfOfParamsStruct],
+  ): string;
+  encodeFunctionData(
     functionFragment: "setUserConfiguration",
     values: [SetUserConfigurationParamsStruct],
   ): string;
@@ -1041,8 +1043,12 @@ export interface SizeInterface extends utils.Interface {
     values: [BigNumberish],
   ): string;
   encodeFunctionData(
-    functionFragment: "sizeFactory",
-    values?: undefined,
+    functionFragment: "setVault",
+    values: [SetVaultParamsStruct],
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setVaultOnBehalfOf",
+    values: [SetVaultOnBehalfOfParamsStruct],
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -1057,7 +1063,6 @@ export interface SizeInterface extends utils.Interface {
     functionFragment: "upgradeToAndCall",
     values: [string, BytesLike],
   ): string;
-  encodeFunctionData(functionFragment: "vaultOf", values: [string]): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdraw",
@@ -1102,14 +1107,6 @@ export interface SizeInterface extends utils.Interface {
     functionFragment: "compensateOnBehalfOf",
     data: BytesLike,
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "copyLimitOrders",
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "copyLimitOrdersOnBehalfOf",
-    data: BytesLike,
-  ): Result;
   decodeFunctionResult(functionFragment: "data", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "debtTokenAmountToCollateralTokenAmount",
@@ -1139,10 +1136,6 @@ export interface SizeInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getLoanOfferAPR",
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getLoanStatus",
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -1181,14 +1174,6 @@ export interface SizeInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "isCreditPositionId",
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isDebtPositionId",
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "isDebtPositionLiquidatable",
     data: BytesLike,
   ): Result;
@@ -1207,6 +1192,10 @@ export interface SizeInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "proxiableUUID",
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "reinitialize",
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -1241,6 +1230,14 @@ export interface SizeInterface extends utils.Interface {
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setCopyLimitOrderConfigs",
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setCopyLimitOrderConfigsOnBehalfOf",
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setUserConfiguration",
     data: BytesLike,
   ): Result;
@@ -1252,8 +1249,9 @@ export interface SizeInterface extends utils.Interface {
     functionFragment: "setVariablePoolBorrowRate",
     data: BytesLike,
   ): Result;
+  decodeFunctionResult(functionFragment: "setVault", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "sizeFactory",
+    functionFragment: "setVaultOnBehalfOf",
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -1269,7 +1267,6 @@ export interface SizeInterface extends utils.Interface {
     functionFragment: "upgradeToAndCall",
     data: BytesLike,
   ): Result;
-  decodeFunctionResult(functionFragment: "vaultOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
   decodeFunctionResult(
@@ -1449,16 +1446,6 @@ export interface Size extends BaseContract {
       overrides?: PayableOverrides & { from?: string },
     ): Promise<ContractTransaction>;
 
-    copyLimitOrders(
-      params: CopyLimitOrdersParamsStruct,
-      overrides?: PayableOverrides & { from?: string },
-    ): Promise<ContractTransaction>;
-
-    copyLimitOrdersOnBehalfOf(
-      externalParams: CopyLimitOrdersOnBehalfOfParamsStruct,
-      overrides?: PayableOverrides & { from?: string },
-    ): Promise<ContractTransaction>;
-
     data(overrides?: CallOverrides): Promise<[DataViewStructOutput]>;
 
     debtTokenAmountToCollateralTokenAmount(
@@ -1510,11 +1497,6 @@ export interface Size extends BaseContract {
       tenor: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<[BigNumber]>;
-
-    getLoanStatus(
-      positionId: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<[number]>;
 
     getPositionsCount(
       overrides?: CallOverrides,
@@ -1575,16 +1557,6 @@ export interface Size extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
-    isCreditPositionId(
-      creditPositionId: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<[boolean]>;
-
-    isDebtPositionId(
-      debtPositionId: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<[boolean]>;
-
     isDebtPositionLiquidatable(
       debtPositionId: BigNumberish,
       overrides?: CallOverrides,
@@ -1621,6 +1593,10 @@ export interface Size extends BaseContract {
     paused(overrides?: CallOverrides): Promise<[boolean]>;
 
     proxiableUUID(overrides?: CallOverrides): Promise<[string]>;
+
+    reinitialize(
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
 
     renounceRole(
       role: BytesLike,
@@ -1673,6 +1649,16 @@ export interface Size extends BaseContract {
       overrides?: PayableOverrides & { from?: string },
     ): Promise<ContractTransaction>;
 
+    setCopyLimitOrderConfigs(
+      params: SetCopyLimitOrderConfigsParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    setCopyLimitOrderConfigsOnBehalfOf(
+      externalParams: SetCopyLimitOrderConfigsOnBehalfOfParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
     setUserConfiguration(
       params: SetUserConfigurationParamsStruct,
       overrides?: PayableOverrides & { from?: string },
@@ -1688,7 +1674,15 @@ export interface Size extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
-    sizeFactory(overrides?: CallOverrides): Promise<[string]>;
+    setVault(
+      params: SetVaultParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    setVaultOnBehalfOf(
+      externalParams: SetVaultOnBehalfOfParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<ContractTransaction>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -1709,8 +1703,6 @@ export interface Size extends BaseContract {
       data: BytesLike,
       overrides?: PayableOverrides & { from?: string },
     ): Promise<ContractTransaction>;
-
-    vaultOf(user: string, overrides?: CallOverrides): Promise<[string]>;
 
     version(overrides?: CallOverrides): Promise<[string]>;
 
@@ -1766,16 +1758,6 @@ export interface Size extends BaseContract {
     overrides?: PayableOverrides & { from?: string },
   ): Promise<ContractTransaction>;
 
-  copyLimitOrders(
-    params: CopyLimitOrdersParamsStruct,
-    overrides?: PayableOverrides & { from?: string },
-  ): Promise<ContractTransaction>;
-
-  copyLimitOrdersOnBehalfOf(
-    externalParams: CopyLimitOrdersOnBehalfOfParamsStruct,
-    overrides?: PayableOverrides & { from?: string },
-  ): Promise<ContractTransaction>;
-
   data(overrides?: CallOverrides): Promise<DataViewStructOutput>;
 
   debtTokenAmountToCollateralTokenAmount(
@@ -1827,11 +1809,6 @@ export interface Size extends BaseContract {
     tenor: BigNumberish,
     overrides?: CallOverrides,
   ): Promise<BigNumber>;
-
-  getLoanStatus(
-    positionId: BigNumberish,
-    overrides?: CallOverrides,
-  ): Promise<number>;
 
   getPositionsCount(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
 
@@ -1890,16 +1867,6 @@ export interface Size extends BaseContract {
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
-  isCreditPositionId(
-    creditPositionId: BigNumberish,
-    overrides?: CallOverrides,
-  ): Promise<boolean>;
-
-  isDebtPositionId(
-    debtPositionId: BigNumberish,
-    overrides?: CallOverrides,
-  ): Promise<boolean>;
-
   isDebtPositionLiquidatable(
     debtPositionId: BigNumberish,
     overrides?: CallOverrides,
@@ -1936,6 +1903,10 @@ export interface Size extends BaseContract {
   paused(overrides?: CallOverrides): Promise<boolean>;
 
   proxiableUUID(overrides?: CallOverrides): Promise<string>;
+
+  reinitialize(
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
 
   renounceRole(
     role: BytesLike,
@@ -1988,6 +1959,16 @@ export interface Size extends BaseContract {
     overrides?: PayableOverrides & { from?: string },
   ): Promise<ContractTransaction>;
 
+  setCopyLimitOrderConfigs(
+    params: SetCopyLimitOrderConfigsParamsStruct,
+    overrides?: PayableOverrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  setCopyLimitOrderConfigsOnBehalfOf(
+    externalParams: SetCopyLimitOrderConfigsOnBehalfOfParamsStruct,
+    overrides?: PayableOverrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
   setUserConfiguration(
     params: SetUserConfigurationParamsStruct,
     overrides?: PayableOverrides & { from?: string },
@@ -2003,7 +1984,15 @@ export interface Size extends BaseContract {
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
-  sizeFactory(overrides?: CallOverrides): Promise<string>;
+  setVault(
+    params: SetVaultParamsStruct,
+    overrides?: PayableOverrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  setVaultOnBehalfOf(
+    externalParams: SetVaultOnBehalfOfParamsStruct,
+    overrides?: PayableOverrides & { from?: string },
+  ): Promise<ContractTransaction>;
 
   supportsInterface(
     interfaceId: BytesLike,
@@ -2024,8 +2013,6 @@ export interface Size extends BaseContract {
     data: BytesLike,
     overrides?: PayableOverrides & { from?: string },
   ): Promise<ContractTransaction>;
-
-  vaultOf(user: string, overrides?: CallOverrides): Promise<string>;
 
   version(overrides?: CallOverrides): Promise<string>;
 
@@ -2081,16 +2068,6 @@ export interface Size extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<void>;
 
-    copyLimitOrders(
-      params: CopyLimitOrdersParamsStruct,
-      overrides?: CallOverrides,
-    ): Promise<void>;
-
-    copyLimitOrdersOnBehalfOf(
-      externalParams: CopyLimitOrdersOnBehalfOfParamsStruct,
-      overrides?: CallOverrides,
-    ): Promise<void>;
-
     data(overrides?: CallOverrides): Promise<DataViewStructOutput>;
 
     debtTokenAmountToCollateralTokenAmount(
@@ -2142,11 +2119,6 @@ export interface Size extends BaseContract {
       tenor: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
-
-    getLoanStatus(
-      positionId: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<number>;
 
     getPositionsCount(
       overrides?: CallOverrides,
@@ -2207,16 +2179,6 @@ export interface Size extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<void>;
 
-    isCreditPositionId(
-      creditPositionId: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<boolean>;
-
-    isDebtPositionId(
-      debtPositionId: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<boolean>;
-
     isDebtPositionLiquidatable(
       debtPositionId: BigNumberish,
       overrides?: CallOverrides,
@@ -2253,6 +2215,8 @@ export interface Size extends BaseContract {
     paused(overrides?: CallOverrides): Promise<boolean>;
 
     proxiableUUID(overrides?: CallOverrides): Promise<string>;
+
+    reinitialize(overrides?: CallOverrides): Promise<void>;
 
     renounceRole(
       role: BytesLike,
@@ -2302,6 +2266,16 @@ export interface Size extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<void>;
 
+    setCopyLimitOrderConfigs(
+      params: SetCopyLimitOrderConfigsParamsStruct,
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
+    setCopyLimitOrderConfigsOnBehalfOf(
+      externalParams: SetCopyLimitOrderConfigsOnBehalfOfParamsStruct,
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
     setUserConfiguration(
       params: SetUserConfigurationParamsStruct,
       overrides?: CallOverrides,
@@ -2317,7 +2291,15 @@ export interface Size extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<void>;
 
-    sizeFactory(overrides?: CallOverrides): Promise<string>;
+    setVault(
+      params: SetVaultParamsStruct,
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
+    setVaultOnBehalfOf(
+      externalParams: SetVaultOnBehalfOfParamsStruct,
+      overrides?: CallOverrides,
+    ): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -2336,8 +2318,6 @@ export interface Size extends BaseContract {
       data: BytesLike,
       overrides?: CallOverrides,
     ): Promise<void>;
-
-    vaultOf(user: string, overrides?: CallOverrides): Promise<string>;
 
     version(overrides?: CallOverrides): Promise<string>;
 
@@ -2455,16 +2435,6 @@ export interface Size extends BaseContract {
       overrides?: PayableOverrides & { from?: string },
     ): Promise<BigNumber>;
 
-    copyLimitOrders(
-      params: CopyLimitOrdersParamsStruct,
-      overrides?: PayableOverrides & { from?: string },
-    ): Promise<BigNumber>;
-
-    copyLimitOrdersOnBehalfOf(
-      externalParams: CopyLimitOrdersOnBehalfOfParamsStruct,
-      overrides?: PayableOverrides & { from?: string },
-    ): Promise<BigNumber>;
-
     data(overrides?: CallOverrides): Promise<BigNumber>;
 
     debtTokenAmountToCollateralTokenAmount(
@@ -2512,11 +2482,6 @@ export interface Size extends BaseContract {
       collectionId: BigNumberish,
       rateProvider: string,
       tenor: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
-    getLoanStatus(
-      positionId: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
@@ -2577,16 +2542,6 @@ export interface Size extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
-    isCreditPositionId(
-      creditPositionId: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
-    isDebtPositionId(
-      debtPositionId: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
     isDebtPositionLiquidatable(
       debtPositionId: BigNumberish,
       overrides?: CallOverrides,
@@ -2619,6 +2574,8 @@ export interface Size extends BaseContract {
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
     proxiableUUID(overrides?: CallOverrides): Promise<BigNumber>;
+
+    reinitialize(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
     renounceRole(
       role: BytesLike,
@@ -2669,6 +2626,16 @@ export interface Size extends BaseContract {
       overrides?: PayableOverrides & { from?: string },
     ): Promise<BigNumber>;
 
+    setCopyLimitOrderConfigs(
+      params: SetCopyLimitOrderConfigsParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    setCopyLimitOrderConfigsOnBehalfOf(
+      externalParams: SetCopyLimitOrderConfigsOnBehalfOfParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<BigNumber>;
+
     setUserConfiguration(
       params: SetUserConfigurationParamsStruct,
       overrides?: PayableOverrides & { from?: string },
@@ -2684,7 +2651,15 @@ export interface Size extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
-    sizeFactory(overrides?: CallOverrides): Promise<BigNumber>;
+    setVault(
+      params: SetVaultParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    setVaultOnBehalfOf(
+      externalParams: SetVaultOnBehalfOfParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<BigNumber>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -2703,8 +2678,6 @@ export interface Size extends BaseContract {
       data: BytesLike,
       overrides?: PayableOverrides & { from?: string },
     ): Promise<BigNumber>;
-
-    vaultOf(user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     version(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2768,16 +2741,6 @@ export interface Size extends BaseContract {
       overrides?: PayableOverrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
-    copyLimitOrders(
-      params: CopyLimitOrdersParamsStruct,
-      overrides?: PayableOverrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
-    copyLimitOrdersOnBehalfOf(
-      externalParams: CopyLimitOrdersOnBehalfOfParamsStruct,
-      overrides?: PayableOverrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
     data(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     debtTokenAmountToCollateralTokenAmount(
@@ -2825,11 +2788,6 @@ export interface Size extends BaseContract {
       collectionId: BigNumberish,
       rateProvider: string,
       tenor: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
-    getLoanStatus(
-      positionId: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
@@ -2893,16 +2851,6 @@ export interface Size extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
-    isCreditPositionId(
-      creditPositionId: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
-    isDebtPositionId(
-      debtPositionId: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
     isDebtPositionLiquidatable(
       debtPositionId: BigNumberish,
       overrides?: CallOverrides,
@@ -2937,6 +2885,10 @@ export interface Size extends BaseContract {
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     proxiableUUID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    reinitialize(
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
 
     renounceRole(
       role: BytesLike,
@@ -2987,6 +2939,16 @@ export interface Size extends BaseContract {
       overrides?: PayableOverrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
+    setCopyLimitOrderConfigs(
+      params: SetCopyLimitOrderConfigsParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    setCopyLimitOrderConfigsOnBehalfOf(
+      externalParams: SetCopyLimitOrderConfigsOnBehalfOfParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
     setUserConfiguration(
       params: SetUserConfigurationParamsStruct,
       overrides?: PayableOverrides & { from?: string },
@@ -3002,7 +2964,15 @@ export interface Size extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
-    sizeFactory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    setVault(
+      params: SetVaultParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    setVaultOnBehalfOf(
+      externalParams: SetVaultOnBehalfOfParamsStruct,
+      overrides?: PayableOverrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -3022,11 +2992,6 @@ export interface Size extends BaseContract {
       newImplementation: string,
       data: BytesLike,
       overrides?: PayableOverrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
-    vaultOf(
-      user: string,
-      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     version(overrides?: CallOverrides): Promise<PopulatedTransaction>;

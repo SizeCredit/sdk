@@ -483,6 +483,52 @@ const _abi = [
   },
   {
     type: "error",
+    name: "INVALID_OFFER_CONFIGS",
+    inputs: [
+      {
+        name: "minTenorBorrowOffer",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "maxTenorBorrowOffer",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "minAPRBorrowOffer",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "maxAPRBorrowOffer",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "minTenorLoanOffer",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "maxTenorLoanOffer",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "minAPRLoanOffer",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "maxAPRLoanOffer",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+  },
+  {
+    type: "error",
     name: "INVALID_POSITION_ID",
     inputs: [
       {
@@ -692,32 +738,6 @@ const _abi = [
   },
   {
     type: "error",
-    name: "MISMATCHED_CURVES",
-    inputs: [
-      {
-        name: "account",
-        type: "address",
-        internalType: "address",
-      },
-      {
-        name: "tenor",
-        type: "uint256",
-        internalType: "uint256",
-      },
-      {
-        name: "loanOfferAPR",
-        type: "uint256",
-        internalType: "uint256",
-      },
-      {
-        name: "borrowOfferAPR",
-        type: "uint256",
-        internalType: "uint256",
-      },
-    ],
-  },
-  {
-    type: "error",
     name: "MUST_IMPROVE_COLLATERAL_RATIO",
     inputs: [
       {
@@ -854,6 +874,17 @@ const _abi = [
         name: "maxDueDate",
         type: "uint256",
         internalType: "uint256",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "PAUSED_MARKET",
+    inputs: [
+      {
+        name: "market",
+        type: "address",
+        internalType: "address",
       },
     ],
   },
@@ -1051,7 +1082,7 @@ const _abi = [
 ] as const;
 
 const _bytecode =
-  "0x60556032600b8282823980515f1a607314602657634e487b7160e01b5f525f60045260245ffd5b305f52607381538281f3fe730000000000000000000000000000000000000000301460806040525f80fdfea2646970667358221220127d32d035909a646c8c249fe2412826b25534e6763892d00a60e6b54883acd564736f6c63430008170033";
+  "0x60556032600b8282823980515f1a607314602657634e487b7160e01b5f525f60045260245ffd5b305f52607381538281f3fe730000000000000000000000000000000000000000301460806040525f80fdfea2646970667358221220aadd8a5fb82bd5973776a712565e6ac19acf176ac6e42df2c717c4cc081059f564736f6c63430008170033";
 
 type ErrorsConstructorParams =
   | [signer?: Signer]

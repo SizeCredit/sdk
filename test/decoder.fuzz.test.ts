@@ -116,18 +116,17 @@ function generateRandomOperation(
       "setUserConfiguration",
       "setUserConfigurationOnBehalfOf",
       sdk.market.setUserConfiguration(market, {
-        vault: randomAddress(),
         openingLimitBorrowCR: randomBigInt(0n, 1000000n),
         allCreditPositionsForSaleDisabled: randomBool(),
         creditPositionIdsForSale: randomBool(),
         creditPositionIds: [],
       }),
     ],
-    // copyLimitOrders
+    // setCopyLimitOrderConfigs
     () => [
-      "copyLimitOrders",
-      "copyLimitOrdersOnBehalfOf",
-      sdk.market.copyLimitOrders(market, {
+      "setCopyLimitOrderConfigs",
+      "setCopyLimitOrderConfigsOnBehalfOf",
+      sdk.market.setCopyLimitOrderConfigs(market, {
         copyLoanOfferConfig: {
           minTenor: 0n,
           maxTenor: randomBigInt(0n, 1000000n),
@@ -142,6 +141,15 @@ function generateRandomOperation(
           maxAPR: randomBigInt(0n, 1000000n),
           offsetAPR: 0n,
         },
+      }),
+    ],
+    // setVault
+    () => [
+      "setVault",
+      "setVaultOnBehalfOf",
+      sdk.market.setVault(market, {
+        vault: randomAddress(),
+        forfeitOldShares: randomBool(),
       }),
     ],
   ];

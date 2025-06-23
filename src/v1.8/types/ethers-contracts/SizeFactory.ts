@@ -186,8 +186,10 @@ export interface SizeFactoryInterface extends utils.Interface {
     "setSizeImplementation(address)": FunctionFragment;
     "sizeImplementation()": FunctionFragment;
     "subscribeToCollections(uint256[])": FunctionFragment;
+    "subscribeToCollectionsOnBehalfOf(uint256[],address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "unsubscribeFromCollections(uint256[])": FunctionFragment;
+    "unsubscribeFromCollectionsOnBehalfOf(uint256[],address)": FunctionFragment;
     "upgradeToAndCall(address,bytes)": FunctionFragment;
     "version()": FunctionFragment;
   };
@@ -232,8 +234,10 @@ export interface SizeFactoryInterface extends utils.Interface {
       | "setSizeImplementation"
       | "sizeImplementation"
       | "subscribeToCollections"
+      | "subscribeToCollectionsOnBehalfOf"
       | "supportsInterface"
       | "unsubscribeFromCollections"
+      | "unsubscribeFromCollectionsOnBehalfOf"
       | "upgradeToAndCall"
       | "version",
   ): FunctionFragment;
@@ -390,12 +394,20 @@ export interface SizeFactoryInterface extends utils.Interface {
     values: [BigNumberish[]],
   ): string;
   encodeFunctionData(
+    functionFragment: "subscribeToCollectionsOnBehalfOf",
+    values: [BigNumberish[], string],
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike],
   ): string;
   encodeFunctionData(
     functionFragment: "unsubscribeFromCollections",
     values: [BigNumberish[]],
+  ): string;
+  encodeFunctionData(
+    functionFragment: "unsubscribeFromCollectionsOnBehalfOf",
+    values: [BigNumberish[], string],
   ): string;
   encodeFunctionData(
     functionFragment: "upgradeToAndCall",
@@ -529,11 +541,19 @@ export interface SizeFactoryInterface extends utils.Interface {
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
+    functionFragment: "subscribeToCollectionsOnBehalfOf",
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
     functionFragment: "unsubscribeFromCollections",
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "unsubscribeFromCollectionsOnBehalfOf",
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -942,6 +962,12 @@ export interface SizeFactory extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
+    subscribeToCollectionsOnBehalfOf(
+      collectionIds: BigNumberish[],
+      onBehalfOf: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides,
@@ -949,6 +975,12 @@ export interface SizeFactory extends BaseContract {
 
     unsubscribeFromCollections(
       collectionIds: BigNumberish[],
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    unsubscribeFromCollectionsOnBehalfOf(
+      collectionIds: BigNumberish[],
+      onBehalfOf: string,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
@@ -1153,6 +1185,12 @@ export interface SizeFactory extends BaseContract {
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
+  subscribeToCollectionsOnBehalfOf(
+    collectionIds: BigNumberish[],
+    onBehalfOf: string,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides,
@@ -1160,6 +1198,12 @@ export interface SizeFactory extends BaseContract {
 
   unsubscribeFromCollections(
     collectionIds: BigNumberish[],
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  unsubscribeFromCollectionsOnBehalfOf(
+    collectionIds: BigNumberish[],
+    onBehalfOf: string,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
@@ -1356,6 +1400,12 @@ export interface SizeFactory extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<void>;
 
+    subscribeToCollectionsOnBehalfOf(
+      collectionIds: BigNumberish[],
+      onBehalfOf: string,
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides,
@@ -1363,6 +1413,12 @@ export interface SizeFactory extends BaseContract {
 
     unsubscribeFromCollections(
       collectionIds: BigNumberish[],
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
+    unsubscribeFromCollectionsOnBehalfOf(
+      collectionIds: BigNumberish[],
+      onBehalfOf: string,
       overrides?: CallOverrides,
     ): Promise<void>;
 
@@ -1677,6 +1733,12 @@ export interface SizeFactory extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
+    subscribeToCollectionsOnBehalfOf(
+      collectionIds: BigNumberish[],
+      onBehalfOf: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides,
@@ -1684,6 +1746,12 @@ export interface SizeFactory extends BaseContract {
 
     unsubscribeFromCollections(
       collectionIds: BigNumberish[],
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    unsubscribeFromCollectionsOnBehalfOf(
+      collectionIds: BigNumberish[],
+      onBehalfOf: string,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
@@ -1908,6 +1976,12 @@ export interface SizeFactory extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
+    subscribeToCollectionsOnBehalfOf(
+      collectionIds: BigNumberish[],
+      onBehalfOf: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides,
@@ -1915,6 +1989,12 @@ export interface SizeFactory extends BaseContract {
 
     unsubscribeFromCollections(
       collectionIds: BigNumberish[],
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    unsubscribeFromCollectionsOnBehalfOf(
+      collectionIds: BigNumberish[],
+      onBehalfOf: string,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 

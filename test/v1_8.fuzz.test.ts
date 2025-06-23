@@ -177,7 +177,6 @@ describe("@sizecredit/sdk v1.8", () => {
 
       const txs = sdk.tx.build(alice, [
         sdk.market.setUserConfiguration(market2, {
-          vault,
           openingLimitBorrowCR,
           allCreditPositionsForSaleDisabled,
           creditPositionIdsForSale,
@@ -189,8 +188,35 @@ describe("@sizecredit/sdk v1.8", () => {
       expect(txs[0].target).toBe(market2);
       expect(txs[0].data).toContain(
         sdk.helpers.selector(
-          "setUserConfiguration((address,uint256,bool,bool,uint256[]))",
+          "setUserConfiguration((uint256,bool,bool,uint256[]))",
         ),
+      );
+    }
+  });
+
+  test("fuzz setVault with random parameters and addresses", async () => {
+    for (let i = 0; i < RUNS; i++) {
+      const alice = randomAddress();
+      const market2 = randomAddress();
+      const sizeFactory = randomAddress();
+      const vault = randomAddress();
+
+      sdk = new SDK({
+        version: "v1.8",
+        sizeFactory,
+      });
+
+      const txs = sdk.tx.build(alice, [
+        sdk.market.setVault(market2, {
+          vault,
+          forfeitOldShares: randomBool(),
+        }),
+      ]);
+
+      expect(txs.length).toBe(1);
+      expect(txs[0].target).toBe(market2);
+      expect(txs[0].data).toContain(
+        sdk.helpers.selector("setVault((address,bool))"),
       );
     }
   });

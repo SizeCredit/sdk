@@ -3,7 +3,7 @@ import { Address } from "../../index";
 import {
   DepositOnBehalfOfParamsStruct,
   SetUserConfigurationOnBehalfOfParamsStruct,
-  CopyLimitOrdersOnBehalfOfParamsStruct,
+  SetCopyLimitOrderConfigsOnBehalfOfParamsStruct,
   SelfLiquidateOnBehalfOfParamsStruct,
   SellCreditMarketOnBehalfOfParamsStruct,
   SellCreditLimitOnBehalfOfParamsStruct,
@@ -18,7 +18,9 @@ import {
   SellCreditMarketParamsStruct,
   SelfLiquidateParamsStruct,
   SetUserConfigurationParamsStruct,
-  CopyLimitOrdersParamsStruct,
+  SetCopyLimitOrderConfigsParamsStruct,
+  SetVaultOnBehalfOfParamsStruct,
+  SetVaultParamsStruct,
 } from "../types/ethers-contracts/Size";
 import {
   MarketFunctionName,
@@ -35,7 +37,8 @@ export type OnBehalfOfFunctionName =
   | "sellCreditMarketOnBehalfOf"
   | "selfLiquidateOnBehalfOf"
   | "setUserConfigurationOnBehalfOf"
-  | "copyLimitOrdersOnBehalfOf";
+  | "setCopyLimitOrderConfigsOnBehalfOf"
+  | "setVaultOnBehalfOf";
 
 export const MarketFunctionNameToOnBehalfOfFunctionName: Record<
   Exclude<
@@ -52,7 +55,8 @@ export const MarketFunctionNameToOnBehalfOfFunctionName: Record<
   sellCreditMarket: "sellCreditMarketOnBehalfOf",
   selfLiquidate: "selfLiquidateOnBehalfOf",
   setUserConfiguration: "setUserConfigurationOnBehalfOf",
-  copyLimitOrders: "copyLimitOrdersOnBehalfOf",
+  setCopyLimitOrderConfigs: "setCopyLimitOrderConfigsOnBehalfOf",
+  setVault: "setVaultOnBehalfOf",
 };
 
 export type OnBehalfOfOperationParams =
@@ -64,7 +68,8 @@ export type OnBehalfOfOperationParams =
   | SellCreditMarketOnBehalfOfParamsStruct
   | SelfLiquidateOnBehalfOfParamsStruct
   | SetUserConfigurationOnBehalfOfParamsStruct
-  | CopyLimitOrdersOnBehalfOfParamsStruct;
+  | SetCopyLimitOrderConfigsOnBehalfOfParamsStruct
+  | SetVaultOnBehalfOfParamsStruct;
 
 export type OnBehalfOfOperation<
   T extends OnBehalfOfOperationParams = OnBehalfOfOperationParams,
@@ -201,16 +206,31 @@ export function setUserConfigurationOnBehalfOf(
   };
 }
 
-export function copyLimitOrdersOnBehalfOf(
-  copyLimitOrders: MarketOperation<CopyLimitOrdersParamsStruct>,
+export function setCopyLimitOrderConfigsOnBehalfOf(
+  setCopyLimitOrderConfigs: MarketOperation<SetCopyLimitOrderConfigsParamsStruct>,
   onBehalfOf: Address,
-): OnBehalfOfOperation<CopyLimitOrdersOnBehalfOfParamsStruct> {
+): OnBehalfOfOperation<SetCopyLimitOrderConfigsOnBehalfOfParamsStruct> {
   return {
-    market: copyLimitOrders.market,
-    functionName: "copyLimitOrdersOnBehalfOf",
-    action: Action.COPY_LIMIT_ORDERS,
+    market: setCopyLimitOrderConfigs.market,
+    functionName: "setCopyLimitOrderConfigsOnBehalfOf",
+    action: Action.SET_COPY_LIMIT_ORDER_CONFIGS,
     externalParams: {
-      params: copyLimitOrders.params,
+      params: setCopyLimitOrderConfigs.params,
+      onBehalfOf,
+    },
+  };
+}
+
+export function setVaultOnBehalfOf(
+  setVault: MarketOperation<SetVaultParamsStruct>,
+  onBehalfOf: Address,
+): OnBehalfOfOperation<SetVaultOnBehalfOfParamsStruct> {
+  return {
+    market: setVault.market,
+    functionName: "setVaultOnBehalfOf",
+    action: Action.SET_VAULT,
+    externalParams: {
+      params: setVault.params,
       onBehalfOf,
     },
   };

@@ -15,6 +15,8 @@ describe("@sizecredit/sdk v1.7", () => {
   let window: any;
   let sdk: SDK<"v1.7">;
 
+  const sizeFactory = randomAddress();
+
   const RUNS = 32;
 
   beforeAll(() => {
@@ -34,6 +36,7 @@ describe("@sizecredit/sdk v1.7", () => {
 
       sdk = new SDK({
         version: "v1.7",
+        sizeFactory,
       });
 
       const txs = sdk.tx.build(alice, [
@@ -63,6 +66,7 @@ describe("@sizecredit/sdk v1.7", () => {
 
       sdk = new SDK({
         version: "v1.7",
+        sizeFactory,
       });
 
       const txs = sdk.tx.build(alice, [
@@ -101,6 +105,7 @@ describe("@sizecredit/sdk v1.7", () => {
 
       sdk = new SDK({
         version: "v1.7",
+        sizeFactory,
       });
 
       const txs = sdk.tx.build(alice, [
@@ -158,6 +163,7 @@ describe("@sizecredit/sdk v1.7", () => {
 
       sdk = new SDK({
         version: "v1.7",
+        sizeFactory,
       });
 
       const txs = sdk.tx.build(alice, [
