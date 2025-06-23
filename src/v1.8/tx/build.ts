@@ -7,16 +7,16 @@ import { FactoryOperation } from "../actions/factory";
 import { ERC20Operation } from "../../erc20/actions";
 import Authorization, { ActionsBitmap, type Action } from "../../Authorization";
 import { onBehalfOfOperation } from "../actions/onBehalfOf";
-import { TxArgs, Address } from "../../index";
+import { TxArgs, Address, OperationV1_8 } from "../../index";
 
 function isMarketOperation(
-  operation: MarketOperation | FactoryOperation | ERC20Operation,
+  operation: OperationV1_8,
 ): operation is MarketOperation {
   return "market" in operation;
 }
 
 function isERC20Operation(
-  operation: MarketOperation | FactoryOperation | ERC20Operation,
+  operation: OperationV1_8,
 ): operation is ERC20Operation {
   return "functionName" in operation && operation.functionName === "approve";
 }
@@ -80,7 +80,7 @@ export class TxBuilder {
           onBehalfOfCalldata: undefined,
           action: undefined,
         };
-      } else {
+      } /*isFactoryOperation*/ else {
         const { functionName, params } = operation;
         const calldata = this.ISizeFactory.encodeFunctionData(functionName, [
           params,
@@ -132,7 +132,11 @@ export class TxBuilder {
       }
 
       const last = acc[acc.length - 1];
-      if (last && last.target === op.target && last.target !== this.sizeFactory) {
+      if (
+        last &&
+        last.target === op.target &&
+        last.target !== this.sizeFactory
+      ) {
         last.ops.push(op);
       } else {
         acc.push({ target: op.target, ops: [op] });
@@ -152,7 +156,9 @@ export class TxBuilder {
         ]);
       }
 
-      const calldatas = group.ops.map((g) => g.onBehalfOfCalldata ?? g.calldata);
+      const calldatas = group.ops.map(
+        (g) => g.onBehalfOfCalldata ?? g.calldata,
+      );
       const multicall = this.ISize.encodeFunctionData("multicall", [calldatas]);
       return this.ISizeFactory.encodeFunctionData("callMarket", [
         group.target,

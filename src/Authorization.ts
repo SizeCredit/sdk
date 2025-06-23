@@ -74,6 +74,7 @@ export function getActionsBitmap(
 }
 
 export const Authorization = {
+  Action,
   toBigInt,
   nullActionsBitmap,
   isValid,

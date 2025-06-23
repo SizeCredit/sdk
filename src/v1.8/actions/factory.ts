@@ -1,12 +1,15 @@
 import { BigNumberish } from "ethers";
+import { Address } from "../..";
 
 type FactoryFunctionName =
   | "subscribeToCollections"
-  | "unsubscribeFromCollections";
+  | "unsubscribeFromCollections"
+  | "setAuthorization"
+  | "revokeAllAuthorizations";
 
 export type FactoryOperation = {
   functionName: FactoryFunctionName;
-  params: BigNumberish[];
+  params: BigNumberish[] | [Address, BigNumberish] | [];
 };
 
 export class FactoryActions {
@@ -23,6 +26,20 @@ export class FactoryActions {
     return {
       functionName: "unsubscribeFromCollections",
       params,
+    };
+  }
+
+  setAuthorization(params: [Address, BigNumberish]): FactoryOperation {
+    return {
+      functionName: "setAuthorization",
+      params,
+    };
+  }
+
+  revokeAllAuthorizations(): FactoryOperation {
+    return {
+      functionName: "revokeAllAuthorizations",
+      params: [],
     };
   }
 }

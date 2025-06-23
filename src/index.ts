@@ -7,6 +7,10 @@ import {
   FactoryOperation as FactoryOperationV1_8,
 } from "./v1.8/actions/factory";
 import {
+  FactoryActions as FactoryActionsV1_7,
+  FactoryOperation as FactoryOperationV1_7,
+} from "./v1.7/actions/factory";
+import {
   MarketActions as MarketActionsV1_7,
   MarketOperation as MarketOperationV1_7,
 } from "./v1.7/actions/market";
@@ -20,6 +24,7 @@ import { CalldataDecoder } from "./decoder/calldata";
 import selector from "./helpers/selector";
 import deadline from "./helpers/deadline";
 import { BigNumberish, ethers } from "ethers";
+import Authorization from "./Authorization";
 
 export type Address = `0x${string}`;
 
@@ -33,16 +38,15 @@ export type Version = "v1.7" | "v1.8";
 
 interface SDKParamsCommon {
   labels?: Record<string, string>;
+  sizeFactory: Address;
 }
 
 export interface SDKParamsV1_8 extends SDKParamsCommon {
   version: "v1.8";
-  sizeFactory: Address;
 }
 
 export interface SDKParamsV1_7 extends SDKParamsCommon {
   version: "v1.7";
-  sizeFactory?: never;
 }
 
 export type SDKParams = SDKParamsV1_7 | SDKParamsV1_8;
@@ -52,7 +56,7 @@ export type MarketActionsByVersion<T extends Version> = T extends "v1.8"
   : MarketActionsV1_7;
 export type FactoryActionsByVersion<T extends Version> = T extends "v1.8"
   ? FactoryActionsV1_8
-  : never;
+  : FactoryActionsV1_7;
 export type TxBuilderByVersion<T extends Version> = T extends "v1.8"
   ? TxBuilderV1_8
   : TxBuilderV1_7;
@@ -61,10 +65,13 @@ export type OperationV1_8 =
   | MarketOperationV1_8
   | FactoryOperationV1_8
   | ERC20Operation;
-export type OperationV1_7 = MarketOperationV1_7 | ERC20Operation;
+export type OperationV1_7 =
+  | MarketOperationV1_7
+  | FactoryOperationV1_7
+  | ERC20Operation;
 
 class SDK<T extends Version> {
-  public readonly sizeFactory: Address | undefined;
+  public readonly sizeFactory: Address;
 
   public readonly version: T;
 
@@ -77,6 +84,7 @@ class SDK<T extends Version> {
   private readonly txBuilder: TxBuilderByVersion<T>;
 
   constructor(params: SDKParams & { version: T }) {
+    this.sizeFactory = params.sizeFactory;
     this.version = params.version;
     this.erc20 = new ERC20Actions();
     this.errorDecoder = new ErrorDecoder();
@@ -88,8 +96,6 @@ class SDK<T extends Version> {
     });
 
     if (params.version === "v1.8") {
-      this.sizeFactory = (params as SDKParamsV1_8).sizeFactory;
-
       this.factory = new FactoryActionsV1_8() as FactoryActionsByVersion<T>;
       this.market = new MarketActionsV1_8() as MarketActionsByVersion<T>;
 
@@ -97,10 +103,13 @@ class SDK<T extends Version> {
         this.sizeFactory,
       ) as TxBuilderByVersion<T>;
     } else {
-      this.factory = undefined as unknown as FactoryActionsByVersion<T>;
+      this.factory =
+        new FactoryActionsV1_7() as unknown as FactoryActionsByVersion<T>;
       this.market = new MarketActionsV1_7() as MarketActionsByVersion<T>;
 
-      this.txBuilder = new TxBuilderV1_7() as TxBuilderByVersion<T>;
+      this.txBuilder = new TxBuilderV1_7(
+        this.sizeFactory,
+      ) as TxBuilderByVersion<T>;
     }
   }
 
@@ -132,6 +141,7 @@ class SDK<T extends Version> {
     return {
       deadline,
       selector,
+      Authorization,
     };
   }
 
