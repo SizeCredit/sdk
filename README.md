@@ -1,4 +1,4 @@
-# @sizecredit/sdk [![Coverage Status](https://coveralls.io/repos/github/SizeCredit/sdk/badge.svg?branch=main)](https://coveralls.io/github/SizeCredit/sdk?branch=main)
+# @sizecredit/sdk [![Coverage Status](https://coveralls.io/repos/github/SizeCredit/sdk/badge.svg?branch=main)](https://coveralls.io/github/SizeCredit/sdk?branch=main) [![npm version](https://img.shields.io/npm/v/@sizecredit/sdk)](https://www.npmjs.com/package/@sizecredit/sdk)
 
 Size TypeScript SDK for interacting with the Size protocol
 
