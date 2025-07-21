@@ -90,6 +90,7 @@ class SDK<T extends Version> {
     this.errorDecoder = new ErrorDecoder();
     this.calldataDecoder = new CalldataDecoder({
       [ethers.constants.MaxUint256.toString()]: "type(uint256).max",
+      [ethers.constants.MaxInt256.toString()]: "type(int256).max",
       [ethers.constants.MinInt256.toString()]: "type(int256).min",
       [ethers.constants.AddressZero.toString()]: "address(0)",
       ...(params.labels || {}),
