@@ -452,6 +452,12 @@ describe("@sizecredit/sdk v1.8", () => {
     expect(decoded).toContain(alice.toLowerCase());
   });
 
+  test("v1.8.1 - ERC20 error", () => {
+    const error = '0xe450d38c000000000000000000000000ed5f3300c21b37f16267981d80cd01ec883a7822000000000000000000000000000000000000000000000000000000003bb1642a000000000000000000000000000000000000000000000000000000003bb1642c'
+    const decoded = sdk.errorDecoder.decode(error);
+    expect(decoded).toEqual("ERC20InsufficientBalance(0xeD5F3300C21B37f16267981D80CD01Ec883a7822,1001481258,1001481260)");
+  });
+
   test("v1.8.1 - error decoder should decode ERC1155 errors from new IERC1155Errors ABI", () => {
     // Test ERC1155InsufficientBalance
     const IERC1155ErrorsV1_8 = new ethers.utils.Interface([
