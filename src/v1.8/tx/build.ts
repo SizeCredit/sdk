@@ -82,9 +82,10 @@ export class TxBuilder {
         };
       } /*isFactoryOperation*/ else {
         const { functionName, params } = operation;
-        const calldata = this.ISizeFactory.encodeFunctionData(functionName, [
+        const calldata = this.ISizeFactory.encodeFunctionData(
+          functionName,
           params,
-        ]);
+        );
         return {
           target: this.sizeFactory,
           calldata: calldata,

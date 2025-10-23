@@ -5,6 +5,7 @@ import { BigNumber, ethers } from "ethers";
 import Authorization, { Action } from "../src/Authorization";
 import SizeABI from "../src/v1.8/abi/Size.json";
 import SizeFactoryABI from "../src/v1.8/abi/SizeFactory.json";
+import ErrorsABI from "../src/v1.8/abi/Errors.json";
 import ERC20ABI from "../src/erc20/abi/ERC20.json";
 
 describe("@sizecredit/sdk v1.8", () => {
@@ -26,6 +27,7 @@ describe("@sizecredit/sdk v1.8", () => {
 
   const ISize = new ethers.utils.Interface(SizeABI.abi);
   const ISizeFactory = new ethers.utils.Interface(SizeFactoryABI.abi);
+  const IErrors = new ethers.utils.Interface(ErrorsABI.abi);
   const IERC20 = new ethers.utils.Interface(ERC20ABI.abi);
 
   beforeAll(() => {
@@ -325,6 +327,198 @@ describe("@sizecredit/sdk v1.8", () => {
   test("tx.build should throw on empty operations", () => {
     expect(() => sdk.tx.build(alice, [])).toThrow(
       "[@sizecredit/sdk] no operations to execute",
+    );
+  });
+
+  // v1.8.1 tests - new functions and error types
+  test("v1.8.1 - Size interface should have new isUserDefinedBorrowOfferNull function", () => {
+    const functionFragment = ISize.getFunction("isUserDefinedBorrowOfferNull");
+    expect(functionFragment).toBeDefined();
+    expect(functionFragment.name).toBe("isUserDefinedBorrowOfferNull");
+    expect(functionFragment.inputs.length).toBe(1);
+    expect(functionFragment.inputs[0].type).toBe("address");
+  });
+
+  test("v1.8.1 - Size interface should have new isUserDefinedLoanOfferNull function", () => {
+    const functionFragment = ISize.getFunction("isUserDefinedLoanOfferNull");
+    expect(functionFragment).toBeDefined();
+    expect(functionFragment.name).toBe("isUserDefinedLoanOfferNull");
+    expect(functionFragment.inputs.length).toBe(1);
+    expect(functionFragment.inputs[0].type).toBe("address");
+  });
+
+  test("v1.8.1 - Size interface should not have removed getPositionsCount function", () => {
+    expect(() => ISize.getFunction("getPositionsCount")).toThrow();
+  });
+
+  test("v1.8.1 - Size interface should not have removed setVariablePoolBorrowRate function", () => {
+    expect(() => ISize.getFunction("setVariablePoolBorrowRate")).toThrow();
+  });
+
+  test("v1.8.1 - Size interface should not have removed isDebtPositionLiquidatable function", () => {
+    expect(() => ISize.getFunction("isDebtPositionLiquidatable")).toThrow();
+  });
+
+  test("v1.8.1 - error decoder should decode INVALID_OFFER_CONFIGS error", () => {
+    // INVALID_OFFER_CONFIGS has 8 parameters
+    const errorData = IErrors.encodeErrorResult("INVALID_OFFER_CONFIGS", [
+      1000, 5000, 100, 500, 2000, 6000, 150, 600,
+    ]);
+    const decoded = sdk.errorDecoder.decode(errorData);
+    expect(decoded).toContain("INVALID_OFFER_CONFIGS");
+    expect(decoded).toContain("1000");
+    expect(decoded).toContain("5000");
+  });
+
+  test("v1.8.1 - error decoder should decode PAUSED_MARKET error", () => {
+    const errorData = IErrors.encodeErrorResult("PAUSED_MARKET", [market1]);
+    const decoded = sdk.errorDecoder.decode(errorData);
+    expect(decoded).toContain("PAUSED_MARKET");
+    expect(decoded).toContain(market1.toLowerCase());
+  });
+
+  test("v1.8.1 - error decoder should not decode removed MISMATCHED_CURVES error", () => {
+    expect(() => {
+      IErrors.encodeErrorResult("MISMATCHED_CURVES", [alice, 1000, 500, 600]);
+    }).toThrow();
+  });
+
+  test("v1.8.1 - setUserCollectionCopyLimitOrderConfigs should build transaction", () => {
+    const copyLoanOfferConfig = {
+      minTenor: 86400,
+      maxTenor: 31536000,
+      minAPR: 100,
+      maxAPR: 5000,
+      offsetAPR: 0,
+    };
+    const copyBorrowOfferConfig = {
+      minTenor: 0,
+      maxTenor: 0,
+      minAPR: 0,
+      maxAPR: 0,
+      offsetAPR: 0,
+    };
+
+    const txs = sdk.tx.build(alice, [
+      sdk.factory.setUserCollectionCopyLimitOrderConfigs([
+        42,
+        copyLoanOfferConfig,
+        copyBorrowOfferConfig,
+      ]),
+    ]);
+
+    expect(txs.length).toBe(1);
+    expect(txs[0].target).toBe(sizeFactory);
+    expect(txs[0].data).toContain(
+      sdk.helpers.selector(
+        ISizeFactory,
+        "setUserCollectionCopyLimitOrderConfigs",
+      ),
+    );
+  });
+
+  test("v1.8.1 - error decoder should decode ERC20 errors from new IERC20Errors ABI", () => {
+    // Test ERC20InsufficientBalance
+    const IERC20ErrorsV1_8 = new ethers.utils.Interface([
+      "error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed)",
+    ]);
+    const errorData = IERC20ErrorsV1_8.encodeErrorResult(
+      "ERC20InsufficientBalance",
+      [alice, 100, 200],
+    );
+    const decoded = sdk.errorDecoder.decode(errorData);
+    expect(decoded).toContain("ERC20InsufficientBalance");
+    expect(decoded).toContain(alice.toLowerCase());
+    expect(decoded).toContain("100");
+    expect(decoded).toContain("200");
+  });
+
+  test("v1.8.1 - error decoder should decode ERC721 errors from new IERC721Errors ABI", () => {
+    // Test ERC721InvalidOwner
+    const IERC721ErrorsV1_8 = new ethers.utils.Interface([
+      "error ERC721InvalidOwner(address owner)",
+    ]);
+    const errorData = IERC721ErrorsV1_8.encodeErrorResult(
+      "ERC721InvalidOwner",
+      [alice],
+    );
+    const decoded = sdk.errorDecoder.decode(errorData);
+    expect(decoded).toContain("ERC721InvalidOwner");
+    expect(decoded).toContain(alice.toLowerCase());
+  });
+
+  test("v1.8.1 - error decoder should decode ERC1155 errors from new IERC1155Errors ABI", () => {
+    // Test ERC1155InsufficientBalance
+    const IERC1155ErrorsV1_8 = new ethers.utils.Interface([
+      "error ERC1155InsufficientBalance(address sender, uint256 balance, uint256 needed, uint256 tokenId)",
+    ]);
+    const errorData = IERC1155ErrorsV1_8.encodeErrorResult(
+      "ERC1155InsufficientBalance",
+      [alice, 50, 100, 1],
+    );
+    const decoded = sdk.errorDecoder.decode(errorData);
+    expect(decoded).toContain("ERC1155InsufficientBalance");
+    expect(decoded).toContain(alice.toLowerCase());
+    expect(decoded).toContain("50");
+    expect(decoded).toContain("100");
+    expect(decoded).toContain("1");
+  });
+
+  test("v1.8.1 ideal flow", async () => {
+    const txs = sdk.tx.build(alice, [
+      sdk.market.setVault(market2, {
+        vault: "0x000000000000000000000000000000000000eeee",
+        forfeitOldShares: false,
+      }),
+      sdk.market.deposit(market1, {
+        amount: BigNumber.from(100),
+        to: "0x0000000000000000000000000000000000001337",
+        token: "0x4200000000000000000000000000000000000006",
+      }),
+      sdk.factory.subscribeToCollections([42n]),
+      sdk.factory.setUserCollectionCopyLimitOrderConfigs([42, sdk.constants.FullCopy, sdk.constants.NoCopy]),
+    ]);
+    expect(txs.length).toBe(1);
+    expect(txs[0].target).toBe(sizeFactory);
+    expect(txs[0].data).toContain(
+      sdk.helpers.selector("setAuthorization(address,uint256)"),
+    );
+    const iface = new ethers.utils.Interface([
+      "function setAuthorization(address,uint256)",
+    ]);
+    const auth = iface.encodeFunctionData("setAuthorization", [
+      sizeFactory,
+      Authorization.getActionsBitmap([
+        Action.SET_VAULT,
+        Action.DEPOSIT,
+        Action.MANAGE_COLLECTION_SUBSCRIPTIONS,
+      ]).toString(),
+    ]);
+    expect(txs[0].data).toContain(auth.substring(2));
+    expect(txs[0].data).toContain(
+      sdk.helpers.selector(
+        "depositOnBehalfOf(((address,uint256,address),address))",
+      ),
+    );
+    expect(txs[0].data).not.toContain(
+      sdk.helpers.selector("deposit((address,uint256,address))"),
+    );
+    expect(txs[0].data).toContain(
+      sdk.helpers.selector(
+        "subscribeToCollections(uint256[])",
+      ),
+    );
+    expect(txs[0].data).toContain(
+      sdk.helpers.selector(
+        "setUserCollectionCopyLimitOrderConfigs(address,uint256,(uint256,uint256,uint256,uint256,int256),(uint256,uint256,uint256,uint256,int256))",
+      ),
+    );
+    expect(txs[0].data).toContain(
+      sdk.helpers.selector(ISizeFactory, "callMarket"),
+    );
+    expect(txs[0].data).toContain(sdk.helpers.selector(ISize, "multicall"));
+    expect(txs[0].data).toBe(
+      "0xac9650d80000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000024000000000000000000000000000000000000000000000000000000000000005e00000000000000000000000000000000000000000000000000000000000000680000000000000000000000000000000000000000000000000000000000000004491c769ce000000000000000000000000000000000000000000000000000000000000ffff00000000000000000000000000000000000000000000000000000000000006010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000e45ec4954400000000000000000000000000000000000000000000000000000000000004560000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000006475829a36000000000000000000000000000000000000000000000000000000000000eeee00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003645ec495440000000000000000000000000000000000000000000000000000000000000123000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e4ac9650d800000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000084fa823af500000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000133700000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001647a32376a0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000064c8fb624700000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004491c769ce000000000000000000000000000000000000000000000000000000000000ffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     );
   });
 });
