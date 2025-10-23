@@ -146,6 +146,28 @@ export type PriceFeedParamsStructOutput = [
   sequencerUptimeFeed: string;
 };
 
+export type CopyLimitOrderConfigStruct = {
+  minTenor: BigNumberish;
+  maxTenor: BigNumberish;
+  minAPR: BigNumberish;
+  maxAPR: BigNumberish;
+  offsetAPR: BigNumberish;
+};
+
+export type CopyLimitOrderConfigStructOutput = [
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+] & {
+  minTenor: BigNumber;
+  maxTenor: BigNumber;
+  minAPR: BigNumber;
+  maxAPR: BigNumber;
+  offsetAPR: BigNumber;
+};
+
 export interface SizeFactoryInterface extends utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
@@ -174,9 +196,7 @@ export interface SizeFactoryInterface extends utils.Interface {
     "isMarket(address)": FunctionFragment;
     "multicall(bytes[])": FunctionFragment;
     "nonTransferrableTokenVaultImplementation()": FunctionFragment;
-    "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "proxiableUUID()": FunctionFragment;
-    "reinitialize(address,address[],address,address,address[])": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeAllAuthorizations()": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
@@ -184,6 +204,8 @@ export interface SizeFactoryInterface extends utils.Interface {
     "setCollectionsManager(address)": FunctionFragment;
     "setNonTransferrableRebasingTokenVaultImplementation(address)": FunctionFragment;
     "setSizeImplementation(address)": FunctionFragment;
+    "setUserCollectionCopyLimitOrderConfigs(uint256,(uint256,uint256,uint256,uint256,int256),(uint256,uint256,uint256,uint256,int256))": FunctionFragment;
+    "setUserCollectionCopyLimitOrderConfigsOnBehalfOf(uint256,(uint256,uint256,uint256,uint256,int256),(uint256,uint256,uint256,uint256,int256),address)": FunctionFragment;
     "sizeImplementation()": FunctionFragment;
     "subscribeToCollections(uint256[])": FunctionFragment;
     "subscribeToCollectionsOnBehalfOf(uint256[],address)": FunctionFragment;
@@ -222,9 +244,7 @@ export interface SizeFactoryInterface extends utils.Interface {
       | "isMarket"
       | "multicall"
       | "nonTransferrableTokenVaultImplementation"
-      | "onERC721Received"
       | "proxiableUUID"
-      | "reinitialize"
       | "renounceRole"
       | "revokeAllAuthorizations"
       | "revokeRole"
@@ -232,6 +252,8 @@ export interface SizeFactoryInterface extends utils.Interface {
       | "setCollectionsManager"
       | "setNonTransferrableRebasingTokenVaultImplementation"
       | "setSizeImplementation"
+      | "setUserCollectionCopyLimitOrderConfigs"
+      | "setUserCollectionCopyLimitOrderConfigsOnBehalfOf"
       | "sizeImplementation"
       | "subscribeToCollections"
       | "subscribeToCollectionsOnBehalfOf"
@@ -346,16 +368,8 @@ export interface SizeFactoryInterface extends utils.Interface {
     values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "onERC721Received",
-    values: [string, string, BigNumberish, BytesLike],
-  ): string;
-  encodeFunctionData(
     functionFragment: "proxiableUUID",
     values?: undefined,
-  ): string;
-  encodeFunctionData(
-    functionFragment: "reinitialize",
-    values: [string, string[], string, string, string[]],
   ): string;
   encodeFunctionData(
     functionFragment: "renounceRole",
@@ -384,6 +398,23 @@ export interface SizeFactoryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setSizeImplementation",
     values: [string],
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setUserCollectionCopyLimitOrderConfigs",
+    values: [
+      BigNumberish,
+      CopyLimitOrderConfigStruct,
+      CopyLimitOrderConfigStruct,
+    ],
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setUserCollectionCopyLimitOrderConfigsOnBehalfOf",
+    values: [
+      BigNumberish,
+      CopyLimitOrderConfigStruct,
+      CopyLimitOrderConfigStruct,
+      string,
+    ],
   ): string;
   encodeFunctionData(
     functionFragment: "sizeImplementation",
@@ -496,15 +527,7 @@ export interface SizeFactoryInterface extends utils.Interface {
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "onERC721Received",
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "proxiableUUID",
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "reinitialize",
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -530,6 +553,14 @@ export interface SizeFactoryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setSizeImplementation",
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setUserCollectionCopyLimitOrderConfigs",
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setUserCollectionCopyLimitOrderConfigsOnBehalfOf",
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -899,24 +930,7 @@ export interface SizeFactory extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<[string]>;
 
-    onERC721Received(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      arg3: BytesLike,
-      overrides?: Overrides & { from?: string },
-    ): Promise<ContractTransaction>;
-
     proxiableUUID(overrides?: CallOverrides): Promise<[string]>;
-
-    reinitialize(
-      _collectionsManager: string,
-      _users: string[],
-      _curator: string,
-      _rateProvider: string,
-      _collectionMarkets: string[],
-      overrides?: Overrides & { from?: string },
-    ): Promise<ContractTransaction>;
 
     renounceRole(
       role: BytesLike,
@@ -952,6 +966,21 @@ export interface SizeFactory extends BaseContract {
 
     setSizeImplementation(
       _sizeImplementation: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    setUserCollectionCopyLimitOrderConfigs(
+      collectionId: BigNumberish,
+      copyLoanOfferConfig: CopyLimitOrderConfigStruct,
+      copyBorrowOfferConfig: CopyLimitOrderConfigStruct,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    setUserCollectionCopyLimitOrderConfigsOnBehalfOf(
+      collectionId: BigNumberish,
+      copyLoanOfferConfig: CopyLimitOrderConfigStruct,
+      copyBorrowOfferConfig: CopyLimitOrderConfigStruct,
+      onBehalfOf: string,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
@@ -1122,24 +1151,7 @@ export interface SizeFactory extends BaseContract {
     overrides?: CallOverrides,
   ): Promise<string>;
 
-  onERC721Received(
-    arg0: string,
-    arg1: string,
-    arg2: BigNumberish,
-    arg3: BytesLike,
-    overrides?: Overrides & { from?: string },
-  ): Promise<ContractTransaction>;
-
   proxiableUUID(overrides?: CallOverrides): Promise<string>;
-
-  reinitialize(
-    _collectionsManager: string,
-    _users: string[],
-    _curator: string,
-    _rateProvider: string,
-    _collectionMarkets: string[],
-    overrides?: Overrides & { from?: string },
-  ): Promise<ContractTransaction>;
 
   renounceRole(
     role: BytesLike,
@@ -1175,6 +1187,21 @@ export interface SizeFactory extends BaseContract {
 
   setSizeImplementation(
     _sizeImplementation: string,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  setUserCollectionCopyLimitOrderConfigs(
+    collectionId: BigNumberish,
+    copyLoanOfferConfig: CopyLimitOrderConfigStruct,
+    copyBorrowOfferConfig: CopyLimitOrderConfigStruct,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  setUserCollectionCopyLimitOrderConfigsOnBehalfOf(
+    collectionId: BigNumberish,
+    copyLoanOfferConfig: CopyLimitOrderConfigStruct,
+    copyBorrowOfferConfig: CopyLimitOrderConfigStruct,
+    onBehalfOf: string,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
@@ -1339,24 +1366,7 @@ export interface SizeFactory extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<string>;
 
-    onERC721Received(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      arg3: BytesLike,
-      overrides?: CallOverrides,
-    ): Promise<string>;
-
     proxiableUUID(overrides?: CallOverrides): Promise<string>;
-
-    reinitialize(
-      _collectionsManager: string,
-      _users: string[],
-      _curator: string,
-      _rateProvider: string,
-      _collectionMarkets: string[],
-      overrides?: CallOverrides,
-    ): Promise<void>;
 
     renounceRole(
       role: BytesLike,
@@ -1390,6 +1400,21 @@ export interface SizeFactory extends BaseContract {
 
     setSizeImplementation(
       _sizeImplementation: string,
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
+    setUserCollectionCopyLimitOrderConfigs(
+      collectionId: BigNumberish,
+      copyLoanOfferConfig: CopyLimitOrderConfigStruct,
+      copyBorrowOfferConfig: CopyLimitOrderConfigStruct,
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
+    setUserCollectionCopyLimitOrderConfigsOnBehalfOf(
+      collectionId: BigNumberish,
+      copyLoanOfferConfig: CopyLimitOrderConfigStruct,
+      copyBorrowOfferConfig: CopyLimitOrderConfigStruct,
+      onBehalfOf: string,
       overrides?: CallOverrides,
     ): Promise<void>;
 
@@ -1670,24 +1695,7 @@ export interface SizeFactory extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
-    onERC721Received(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      arg3: BytesLike,
-      overrides?: Overrides & { from?: string },
-    ): Promise<BigNumber>;
-
     proxiableUUID(overrides?: CallOverrides): Promise<BigNumber>;
-
-    reinitialize(
-      _collectionsManager: string,
-      _users: string[],
-      _curator: string,
-      _rateProvider: string,
-      _collectionMarkets: string[],
-      overrides?: Overrides & { from?: string },
-    ): Promise<BigNumber>;
 
     renounceRole(
       role: BytesLike,
@@ -1723,6 +1731,21 @@ export interface SizeFactory extends BaseContract {
 
     setSizeImplementation(
       _sizeImplementation: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    setUserCollectionCopyLimitOrderConfigs(
+      collectionId: BigNumberish,
+      copyLoanOfferConfig: CopyLimitOrderConfigStruct,
+      copyBorrowOfferConfig: CopyLimitOrderConfigStruct,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    setUserCollectionCopyLimitOrderConfigsOnBehalfOf(
+      collectionId: BigNumberish,
+      copyLoanOfferConfig: CopyLimitOrderConfigStruct,
+      copyBorrowOfferConfig: CopyLimitOrderConfigStruct,
+      onBehalfOf: string,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
@@ -1911,24 +1934,7 @@ export interface SizeFactory extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
-    onERC721Received(
-      arg0: string,
-      arg1: string,
-      arg2: BigNumberish,
-      arg3: BytesLike,
-      overrides?: Overrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
     proxiableUUID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    reinitialize(
-      _collectionsManager: string,
-      _users: string[],
-      _curator: string,
-      _rateProvider: string,
-      _collectionMarkets: string[],
-      overrides?: Overrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
 
     renounceRole(
       role: BytesLike,
@@ -1964,6 +1970,21 @@ export interface SizeFactory extends BaseContract {
 
     setSizeImplementation(
       _sizeImplementation: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    setUserCollectionCopyLimitOrderConfigs(
+      collectionId: BigNumberish,
+      copyLoanOfferConfig: CopyLimitOrderConfigStruct,
+      copyBorrowOfferConfig: CopyLimitOrderConfigStruct,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    setUserCollectionCopyLimitOrderConfigsOnBehalfOf(
+      collectionId: BigNumberish,
+      copyLoanOfferConfig: CopyLimitOrderConfigStruct,
+      copyBorrowOfferConfig: CopyLimitOrderConfigStruct,
+      onBehalfOf: string,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 

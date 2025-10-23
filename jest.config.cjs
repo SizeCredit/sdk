@@ -2,6 +2,7 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
+  maxWorkers: 1,
   collectCoverage: true,
   collectCoverageFrom: ["src/**/*.{ts,tsx}"],
   coverageDirectory: "coverage",

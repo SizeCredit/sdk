@@ -714,7 +714,6 @@ export interface SizeInterface extends utils.Interface {
     "getCreditPosition(uint256)": FunctionFragment;
     "getDebtPosition(uint256)": FunctionFragment;
     "getLoanOfferAPR(address,uint256,address,uint256)": FunctionFragment;
-    "getPositionsCount()": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getSellCreditMarketSwapData((address,uint256,uint256,uint256,uint256,uint256,bool,uint256,address))": FunctionFragment;
     "getUserDefinedBorrowOfferAPR(address,uint256)": FunctionFragment;
@@ -725,7 +724,8 @@ export interface SizeInterface extends utils.Interface {
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "initialize(address,(uint256,uint256,uint256,uint256,uint256,address),(uint256,uint256,uint256,uint256,uint256),(address,uint64),(address,address,address,address,address,address))": FunctionFragment;
-    "isDebtPositionLiquidatable(uint256)": FunctionFragment;
+    "isUserDefinedBorrowOfferNull(address)": FunctionFragment;
+    "isUserDefinedLoanOfferNull(address)": FunctionFragment;
     "liquidate((uint256,uint256,uint256))": FunctionFragment;
     "liquidateWithReplacement((uint256,address,uint256,uint256,uint256,uint256,address))": FunctionFragment;
     "multicall(bytes[])": FunctionFragment;
@@ -749,7 +749,6 @@ export interface SizeInterface extends utils.Interface {
     "setCopyLimitOrderConfigsOnBehalfOf((((uint256,uint256,uint256,uint256,int256),(uint256,uint256,uint256,uint256,int256)),address))": FunctionFragment;
     "setUserConfiguration((uint256,bool,bool,uint256[]))": FunctionFragment;
     "setUserConfigurationOnBehalfOf(((uint256,bool,bool,uint256[]),address))": FunctionFragment;
-    "setVariablePoolBorrowRate(uint128)": FunctionFragment;
     "setVault((address,bool))": FunctionFragment;
     "setVaultOnBehalfOf(((address,bool),address))": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
@@ -783,7 +782,6 @@ export interface SizeInterface extends utils.Interface {
       | "getCreditPosition"
       | "getDebtPosition"
       | "getLoanOfferAPR"
-      | "getPositionsCount"
       | "getRoleAdmin"
       | "getSellCreditMarketSwapData"
       | "getUserDefinedBorrowOfferAPR"
@@ -794,7 +792,8 @@ export interface SizeInterface extends utils.Interface {
       | "grantRole"
       | "hasRole"
       | "initialize"
-      | "isDebtPositionLiquidatable"
+      | "isUserDefinedBorrowOfferNull"
+      | "isUserDefinedLoanOfferNull"
       | "liquidate"
       | "liquidateWithReplacement"
       | "multicall"
@@ -818,7 +817,6 @@ export interface SizeInterface extends utils.Interface {
       | "setCopyLimitOrderConfigsOnBehalfOf"
       | "setUserConfiguration"
       | "setUserConfigurationOnBehalfOf"
-      | "setVariablePoolBorrowRate"
       | "setVault"
       | "setVaultOnBehalfOf"
       | "supportsInterface"
@@ -905,10 +903,6 @@ export interface SizeInterface extends utils.Interface {
     values: [string, BigNumberish, string, BigNumberish],
   ): string;
   encodeFunctionData(
-    functionFragment: "getPositionsCount",
-    values?: undefined,
-  ): string;
-  encodeFunctionData(
     functionFragment: "getRoleAdmin",
     values: [BytesLike],
   ): string;
@@ -952,8 +946,12 @@ export interface SizeInterface extends utils.Interface {
     ],
   ): string;
   encodeFunctionData(
-    functionFragment: "isDebtPositionLiquidatable",
-    values: [BigNumberish],
+    functionFragment: "isUserDefinedBorrowOfferNull",
+    values: [string],
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isUserDefinedLoanOfferNull",
+    values: [string],
   ): string;
   encodeFunctionData(
     functionFragment: "liquidate",
@@ -1037,10 +1035,6 @@ export interface SizeInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setUserConfigurationOnBehalfOf",
     values: [SetUserConfigurationOnBehalfOfParamsStruct],
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setVariablePoolBorrowRate",
-    values: [BigNumberish],
   ): string;
   encodeFunctionData(
     functionFragment: "setVault",
@@ -1139,10 +1133,6 @@ export interface SizeInterface extends utils.Interface {
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getPositionsCount",
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getRoleAdmin",
     data: BytesLike,
   ): Result;
@@ -1174,7 +1164,11 @@ export interface SizeInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "isDebtPositionLiquidatable",
+    functionFragment: "isUserDefinedBorrowOfferNull",
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isUserDefinedLoanOfferNull",
     data: BytesLike,
   ): Result;
   decodeFunctionResult(functionFragment: "liquidate", data: BytesLike): Result;
@@ -1245,10 +1239,6 @@ export interface SizeInterface extends utils.Interface {
     functionFragment: "setUserConfigurationOnBehalfOf",
     data: BytesLike,
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "setVariablePoolBorrowRate",
-    data: BytesLike,
-  ): Result;
   decodeFunctionResult(functionFragment: "setVault", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setVaultOnBehalfOf",
@@ -1282,7 +1272,6 @@ export interface SizeInterface extends utils.Interface {
     "RoleRevoked(bytes32,address,address)": EventFragment;
     "Unpaused(address)": EventFragment;
     "Upgraded(address)": EventFragment;
-    "VariablePoolBorrowRateUpdated(address,uint128,uint128)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
@@ -1292,9 +1281,6 @@ export interface SizeInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Upgraded"): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: "VariablePoolBorrowRateUpdated",
-  ): EventFragment;
 }
 
 export interface InitializedEventObject {
@@ -1361,19 +1347,6 @@ export interface UpgradedEventObject {
 export type UpgradedEvent = TypedEvent<[string], UpgradedEventObject>;
 
 export type UpgradedEventFilter = TypedEventFilter<UpgradedEvent>;
-
-export interface VariablePoolBorrowRateUpdatedEventObject {
-  sender: string;
-  oldBorrowRate: BigNumber;
-  newBorrowRate: BigNumber;
-}
-export type VariablePoolBorrowRateUpdatedEvent = TypedEvent<
-  [string, BigNumber, BigNumber],
-  VariablePoolBorrowRateUpdatedEventObject
->;
-
-export type VariablePoolBorrowRateUpdatedEventFilter =
-  TypedEventFilter<VariablePoolBorrowRateUpdatedEvent>;
 
 export interface Size extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -1498,10 +1471,6 @@ export interface Size extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<[BigNumber]>;
 
-    getPositionsCount(
-      overrides?: CallOverrides,
-    ): Promise<[BigNumber, BigNumber]>;
-
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
 
     getSellCreditMarketSwapData(
@@ -1557,8 +1526,13 @@ export interface Size extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
-    isDebtPositionLiquidatable(
-      debtPositionId: BigNumberish,
+    isUserDefinedBorrowOfferNull(
+      user: string,
+      overrides?: CallOverrides,
+    ): Promise<[boolean]>;
+
+    isUserDefinedLoanOfferNull(
+      user: string,
       overrides?: CallOverrides,
     ): Promise<[boolean]>;
 
@@ -1667,11 +1641,6 @@ export interface Size extends BaseContract {
     setUserConfigurationOnBehalfOf(
       externalParams: SetUserConfigurationOnBehalfOfParamsStruct,
       overrides?: PayableOverrides & { from?: string },
-    ): Promise<ContractTransaction>;
-
-    setVariablePoolBorrowRate(
-      borrowRate: BigNumberish,
-      overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     setVault(
@@ -1810,8 +1779,6 @@ export interface Size extends BaseContract {
     overrides?: CallOverrides,
   ): Promise<BigNumber>;
 
-  getPositionsCount(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
-
   getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
   getSellCreditMarketSwapData(
@@ -1867,8 +1834,13 @@ export interface Size extends BaseContract {
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
-  isDebtPositionLiquidatable(
-    debtPositionId: BigNumberish,
+  isUserDefinedBorrowOfferNull(
+    user: string,
+    overrides?: CallOverrides,
+  ): Promise<boolean>;
+
+  isUserDefinedLoanOfferNull(
+    user: string,
     overrides?: CallOverrides,
   ): Promise<boolean>;
 
@@ -1977,11 +1949,6 @@ export interface Size extends BaseContract {
   setUserConfigurationOnBehalfOf(
     externalParams: SetUserConfigurationOnBehalfOfParamsStruct,
     overrides?: PayableOverrides & { from?: string },
-  ): Promise<ContractTransaction>;
-
-  setVariablePoolBorrowRate(
-    borrowRate: BigNumberish,
-    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   setVault(
@@ -2120,10 +2087,6 @@ export interface Size extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
-    getPositionsCount(
-      overrides?: CallOverrides,
-    ): Promise<[BigNumber, BigNumber]>;
-
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
     getSellCreditMarketSwapData(
@@ -2179,8 +2142,13 @@ export interface Size extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<void>;
 
-    isDebtPositionLiquidatable(
-      debtPositionId: BigNumberish,
+    isUserDefinedBorrowOfferNull(
+      user: string,
+      overrides?: CallOverrides,
+    ): Promise<boolean>;
+
+    isUserDefinedLoanOfferNull(
+      user: string,
       overrides?: CallOverrides,
     ): Promise<boolean>;
 
@@ -2286,11 +2254,6 @@ export interface Size extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<void>;
 
-    setVariablePoolBorrowRate(
-      borrowRate: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<void>;
-
     setVault(
       params: SetVaultParamsStruct,
       overrides?: CallOverrides,
@@ -2377,17 +2340,6 @@ export interface Size extends BaseContract {
 
     "Upgraded(address)"(implementation?: string | null): UpgradedEventFilter;
     Upgraded(implementation?: string | null): UpgradedEventFilter;
-
-    "VariablePoolBorrowRateUpdated(address,uint128,uint128)"(
-      sender?: string | null,
-      oldBorrowRate?: null,
-      newBorrowRate?: null,
-    ): VariablePoolBorrowRateUpdatedEventFilter;
-    VariablePoolBorrowRateUpdated(
-      sender?: string | null,
-      oldBorrowRate?: null,
-      newBorrowRate?: null,
-    ): VariablePoolBorrowRateUpdatedEventFilter;
   };
 
   estimateGas: {
@@ -2485,8 +2437,6 @@ export interface Size extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
-    getPositionsCount(overrides?: CallOverrides): Promise<BigNumber>;
-
     getRoleAdmin(
       role: BytesLike,
       overrides?: CallOverrides,
@@ -2542,8 +2492,13 @@ export interface Size extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
-    isDebtPositionLiquidatable(
-      debtPositionId: BigNumberish,
+    isUserDefinedBorrowOfferNull(
+      user: string,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
+
+    isUserDefinedLoanOfferNull(
+      user: string,
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
@@ -2644,11 +2599,6 @@ export interface Size extends BaseContract {
     setUserConfigurationOnBehalfOf(
       externalParams: SetUserConfigurationOnBehalfOfParamsStruct,
       overrides?: PayableOverrides & { from?: string },
-    ): Promise<BigNumber>;
-
-    setVariablePoolBorrowRate(
-      borrowRate: BigNumberish,
-      overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     setVault(
@@ -2791,8 +2741,6 @@ export interface Size extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
-    getPositionsCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getRoleAdmin(
       role: BytesLike,
       overrides?: CallOverrides,
@@ -2851,8 +2799,13 @@ export interface Size extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
-    isDebtPositionLiquidatable(
-      debtPositionId: BigNumberish,
+    isUserDefinedBorrowOfferNull(
+      user: string,
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>;
+
+    isUserDefinedLoanOfferNull(
+      user: string,
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
@@ -2957,11 +2910,6 @@ export interface Size extends BaseContract {
     setUserConfigurationOnBehalfOf(
       externalParams: SetUserConfigurationOnBehalfOfParamsStruct,
       overrides?: PayableOverrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
-    setVariablePoolBorrowRate(
-      borrowRate: BigNumberish,
-      overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     setVault(

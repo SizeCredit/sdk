@@ -1,15 +1,21 @@
 import { BigNumberish } from "ethers";
 import { Address } from "../..";
+import { CopyLimitOrderConfigStruct } from "../types/ethers-contracts/SizeFactory";
 
 type FactoryFunctionName =
   | "subscribeToCollections"
   | "unsubscribeFromCollections"
   | "setAuthorization"
-  | "revokeAllAuthorizations";
+  | "revokeAllAuthorizations"
+  | "setUserCollectionCopyLimitOrderConfigs";
 
 export type FactoryOperation = {
   functionName: FactoryFunctionName;
-  params: BigNumberish[] | [Address, BigNumberish] | [];
+  params:
+    | BigNumberish[]
+    | [Address, BigNumberish]
+    | [BigNumberish, CopyLimitOrderConfigStruct, CopyLimitOrderConfigStruct]
+    | [];
 };
 
 export class FactoryActions {
@@ -40,6 +46,19 @@ export class FactoryActions {
     return {
       functionName: "revokeAllAuthorizations",
       params: [],
+    };
+  }
+
+  setUserCollectionCopyLimitOrderConfigs(
+    params: [
+      BigNumberish,
+      CopyLimitOrderConfigStruct,
+      CopyLimitOrderConfigStruct,
+    ],
+  ): FactoryOperation {
+    return {
+      functionName: "setUserCollectionCopyLimitOrderConfigs",
+      params,
     };
   }
 }
