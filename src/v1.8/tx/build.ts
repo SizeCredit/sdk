@@ -21,6 +21,13 @@ function isERC20Operation(
   return "functionName" in operation && operation.functionName === "approve";
 }
 
+function isBigNumberishArray(params: unknown): params is BigNumberish[] {
+  return (
+    Array.isArray(params) &&
+    params.every((p) => typeof p === "bigint" || typeof p === "number")
+  );
+}
+
 interface Subcall {
   target: Address;
   calldata: string;
@@ -82,9 +89,10 @@ export class TxBuilder {
         };
       } /*isFactoryOperation*/ else {
         const { functionName, params } = operation;
+
         const calldata = this.ISizeFactory.encodeFunctionData(
           functionName,
-          params,
+          isBigNumberishArray(params) ? [params] : params,
         );
         return {
           target: this.sizeFactory,

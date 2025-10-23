@@ -2,6 +2,8 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
+  setupFiles: ["<rootDir>/jest.setup.cjs"],
+  maxWorkers: 1,
   collectCoverage: true,
   collectCoverageFrom: ["src/**/*.{ts,tsx}"],
   coverageDirectory: "coverage",
